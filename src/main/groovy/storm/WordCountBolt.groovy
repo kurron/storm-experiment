@@ -9,6 +9,13 @@ import backtype.storm.tuple.Values
 import groovy.util.logging.Slf4j
 import backtype.storm.tuple.Tuple as StormTuple
 
+import static storm.FieldNames.COUNT
+import static storm.FieldNames.WORD
+
+/**
+ * Bolts are processing units.  The process tuples and perform actions, such as calculation, API calls,
+ * database calls, etc.
+ */
 @Slf4j
 class WordCountBolt extends BaseRichBolt {
 
@@ -17,7 +24,7 @@ class WordCountBolt extends BaseRichBolt {
 
     @Override
     void declareOutputFields( OutputFieldsDeclarer declarer ) {
-        declarer.declare( new Fields( FieldNames.word.name(), FieldNames.count.name() ) )
+        declarer.declare( new Fields( WORD.name(), COUNT.name() ) )
     }
     @Override
     void prepare( Map stormConf, TopologyContext context, OutputCollector collector ) {
@@ -27,7 +34,7 @@ class WordCountBolt extends BaseRichBolt {
 
     @Override
     void execute( StormTuple tuple ) {
-        String word = tuple.getStringByField( FieldNames.word.name() )
+        String word = tuple.getStringByField( WORD.name() )
         Long count = theCounts.get( word )
         if ( count == null ) {
             count = 0L

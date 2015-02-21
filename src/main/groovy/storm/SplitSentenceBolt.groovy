@@ -9,6 +9,13 @@ import backtype.storm.tuple.Values
 import groovy.util.logging.Slf4j
 import backtype.storm.tuple.Tuple as StormTuple
 
+import static storm.FieldNames.SENTENCE
+import static storm.FieldNames.WORD
+
+/**
+ * Spouts are the source of the stream.  In a real application, this would be an integration with a queue,
+ * database, file, REST call, etc.  It also produces a new stream and emits it.
+ */
 @Slf4j
 class SplitSentenceBolt extends BaseRichBolt {
 
@@ -16,7 +23,7 @@ class SplitSentenceBolt extends BaseRichBolt {
 
     @Override
     void declareOutputFields( OutputFieldsDeclarer declarer ) {
-        declarer.declare( new Fields( FieldNames.word.name() ) )
+        declarer.declare( new Fields( WORD.name() ) )
     }
 
     @Override
@@ -26,9 +33,9 @@ class SplitSentenceBolt extends BaseRichBolt {
 
     @Override
     void execute( StormTuple tuple ) {
-        String sentence = tuple.getStringByField( FieldNames.sentence.name() )
+        String sentence = tuple.getStringByField( SENTENCE.name() )
         sentence.split().each { word ->
-            theCollector.emit (new Values( word ) )
+            theCollector.emit( new Values( word ) )
         }
     }
 }

@@ -1,7 +1,7 @@
 package storm
 
 enum FieldNames {
-    sentence,
-    word,
-    count
+    SENTENCE,
+    WORD,
+    COUNT
 }

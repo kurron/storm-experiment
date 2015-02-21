@@ -8,6 +8,12 @@ import backtype.storm.tuple.Fields
 import backtype.storm.tuple.Values
 import groovy.util.logging.Slf4j
 
+import static storm.FieldNames.SENTENCE
+
+/**
+ * Spouts are the source of the stream.  In a real application, this would be an integration with a queue,
+ * database, file, REST call, etc.  It also produces a new stream and emits it.
+ */
 @Slf4j
 class SentenceSpout extends BaseRichSpout {
 
@@ -38,7 +44,7 @@ class SentenceSpout extends BaseRichSpout {
     @Override
     void declareOutputFields( OutputFieldsDeclarer declarer ) {
         // tell the rest of the world what we will be emitting
-        declarer.declare( new Fields( FieldNames.sentence.name() ) )
+        declarer.declare( new Fields( SENTENCE.name() ) )
     }
 
     @Override

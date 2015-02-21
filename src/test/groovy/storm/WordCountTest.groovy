@@ -6,6 +6,12 @@ import backtype.storm.topology.TopologyBuilder
 import backtype.storm.tuple.Fields
 import spock.lang.Specification
 
+import static storm.FieldNames.WORD
+
+/**
+ * A topology is a network of spouts and bolts.  It defines stream processing pipeline as a graph of
+ * computational nodes.
+ */
 class WordCountTest extends Specification {
 
     final String SENTENCE_SPOUT_ID = 'sentence-spout'
@@ -18,11 +24,12 @@ class WordCountTest extends Specification {
 
         given: 'a valid topology'
         def topologyBuilder = new TopologyBuilder()
+        // spout -> sentence -> count -> report
         topologyBuilder.setSpout( SENTENCE_SPOUT_ID, new SentenceSpout() )
         topologyBuilder.setBolt( SPLIT_BOLT_ID, new SplitSentenceBolt() ).setNumTasks( 2 )
                        .shuffleGrouping( SENTENCE_SPOUT_ID )
         topologyBuilder.setBolt( COUNT_BOLT_ID, new WordCountBolt(), 2 )
-                        .fieldsGrouping(SPLIT_BOLT_ID, new Fields( FieldNames.word.name() ) )
+                        .fieldsGrouping( SPLIT_BOLT_ID, new Fields( WORD.name() ) )
         topologyBuilder.setBolt( REPORT_BOLT_ID, new PrinterBolt())
                        .globalGrouping( COUNT_BOLT_ID )
 
