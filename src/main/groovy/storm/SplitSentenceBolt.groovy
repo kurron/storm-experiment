@@ -16,7 +16,7 @@ class SplitSentenceBolt extends BaseRichBolt {
 
     @Override
     void declareOutputFields( OutputFieldsDeclarer declarer ) {
-        declarer.declare( new Fields( 'word' ) )
+        declarer.declare( new Fields( FieldNames.word.name() ) )
     }
 
     @Override
@@ -26,7 +26,7 @@ class SplitSentenceBolt extends BaseRichBolt {
 
     @Override
     void execute( StormTuple tuple ) {
-        String sentence = tuple.getStringByField( 'sentence' )
+        String sentence = tuple.getStringByField( FieldNames.sentence.name() )
         sentence.split().each { word ->
             theCollector.emit (new Values( word ) )
         }

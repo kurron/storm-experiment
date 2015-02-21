@@ -8,10 +8,10 @@ import spock.lang.Specification
 
 class WordCountTest extends Specification {
 
-    final String SENTENCE_SPOUT_ID = 'sentence_spout'
-    final String SPLIT_BOLT_ID = 'split_bolt'
-    final String COUNT_BOLT_ID = 'count_bolt'
-    final String REPORT_BOLT_ID = 'report_bolt'
+    final String SENTENCE_SPOUT_ID = 'sentence-spout'
+    final String SPLIT_BOLT_ID = 'splitting-bolt'
+    final String COUNT_BOLT_ID = 'counting-bolt'
+    final String REPORT_BOLT_ID = 'reporting-bolt'
     final String TOPOLOGY_NAME = 'word-count-topology'
 
     def 'exercise topology'() {
@@ -22,7 +22,7 @@ class WordCountTest extends Specification {
         topologyBuilder.setBolt( SPLIT_BOLT_ID, new SplitSentenceBolt() ).setNumTasks( 2 )
                        .shuffleGrouping( SENTENCE_SPOUT_ID )
         topologyBuilder.setBolt( COUNT_BOLT_ID, new WordCountBolt(), 2 )
-                        .fieldsGrouping(SPLIT_BOLT_ID, new Fields( 'word' ) )
+                        .fieldsGrouping(SPLIT_BOLT_ID, new Fields( FieldNames.word.name() ) )
         topologyBuilder.setBolt( REPORT_BOLT_ID, new PrinterBolt())
                        .globalGrouping( COUNT_BOLT_ID )
 

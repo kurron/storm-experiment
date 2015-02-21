@@ -16,8 +16,9 @@ class SentenceSpout extends BaseRichSpout {
 
     @Override
     void nextTuple() {
-        String msgId = UUID.randomUUID().toString()
-        theCollector.emit( new Values( sentences[index] ), msgId )
+        // we've been told to send another data point to the stream via the collector
+        def messageID = UUID.randomUUID().toString()
+        theCollector.emit( new Values( sentences[index] ), messageID )
         index++
         if ( index >= sentences.size() ) {
             index = 0
@@ -35,12 +36,14 @@ class SentenceSpout extends BaseRichSpout {
     }
 
     @Override
-    void declareOutputFields(OutputFieldsDeclarer declarer) {
-        declarer.declare( new Fields( 'sentence' ) )
+    void declareOutputFields( OutputFieldsDeclarer declarer ) {
+        // tell the rest of the world what we will be emitting
+        declarer.declare( new Fields( FieldNames.sentence.name() ) )
     }
 
     @Override
-    void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
+    void open( Map conf, TopologyContext context, SpoutOutputCollector collector ) {
+        // when the system is initialized, save the collector s we can send values to it
         theCollector = collector
     }
 

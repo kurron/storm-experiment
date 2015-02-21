@@ -23,8 +23,8 @@ class PrinterBolt extends BaseRichBolt {
 
     @Override
     void execute( StormTuple tuple ) {
-        String word = tuple.getStringByField( 'word' )
-        Long count = tuple.getLongByField( 'count' )
+        String word = tuple.getStringByField( FieldNames.word.name() )
+        Long count = tuple.getLongByField( FieldNames.count.name() )
         theCounts.put( word, count )
     }
 

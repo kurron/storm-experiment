@@ -17,7 +17,7 @@ class WordCountBolt extends BaseRichBolt {
 
     @Override
     void declareOutputFields( OutputFieldsDeclarer declarer ) {
-        declarer.declare( new Fields( 'word', 'count' ) )
+        declarer.declare( new Fields( FieldNames.word.name(), FieldNames.count.name() ) )
     }
     @Override
     void prepare( Map stormConf, TopologyContext context, OutputCollector collector ) {
@@ -27,7 +27,7 @@ class WordCountBolt extends BaseRichBolt {
 
     @Override
     void execute( StormTuple tuple ) {
-        String word = tuple.getStringByField( 'word' )
+        String word = tuple.getStringByField( FieldNames.word.name() )
         Long count = theCounts.get( word )
         if ( count == null ) {
             count = 0L
