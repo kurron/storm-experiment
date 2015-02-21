@@ -1,7 +1,39 @@
 package storm
 
-/**
- * Created by vagrant on 2/20/15.
- */
-class WordCountTest {
+import backtype.storm.Config
+import backtype.storm.LocalCluster
+import backtype.storm.topology.TopologyBuilder
+import backtype.storm.tuple.Fields
+import spock.lang.Specification
+
+class WordCountTest extends Specification {
+
+    final String SENTENCE_SPOUT_ID = "sentence_spout"
+    final String SPLIT_BOLT_ID = "split_bolt"
+    final String COUNT_BOLT_ID = "count_bolt"
+    final String REPORT_BOLT_ID = "report_bolt"
+    final String TOPOLOGY_NAME = "word-count-topology"
+
+    def 'exercise topology'() {
+
+        given: 'a valid topology'
+        TopologyBuilder topologyBuilder = new TopologyBuilder()
+        topologyBuilder.setSpout(SENTENCE_SPOUT_ID, new SentenceSpout())
+        topologyBuilder.setBolt(SPLIT_BOLT_ID, new SplitSentenceBolt()).setNumTasks(2)
+                .shuffleGrouping(SENTENCE_SPOUT_ID)
+        topologyBuilder.setBolt(COUNT_BOLT_ID, new WordCountBolt(), 2)
+                .fieldsGrouping(SPLIT_BOLT_ID, new Fields("word"))
+        topologyBuilder.setBolt(REPORT_BOLT_ID, new PrinterBolt())
+                .globalGrouping(COUNT_BOLT_ID)
+        Config config = new Config()
+
+        when: 'stream is started'
+        LocalCluster cluster = new LocalCluster()
+        cluster.submitTopology(TOPOLOGY_NAME, config, topologyBuilder.createTopology())
+        Thread.sleep(10000)
+        cluster.killTopology(TOPOLOGY_NAME)
+        cluster.shutdown()
+
+        then: 'job is done'
+    }
 }
