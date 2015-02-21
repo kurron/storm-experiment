@@ -9,7 +9,7 @@ import groovy.util.logging.Slf4j
 @Slf4j
 class PrinterBolt extends BaseRichBolt {
 
-    HashMap counts = null
+    Map<String,Long> theCounts = [:]
 
     @Override
     void declareOutputFields( OutputFieldsDeclarer declarer ) {
@@ -17,20 +17,20 @@ class PrinterBolt extends BaseRichBolt {
 
     @Override
     void prepare( Map stormConf, TopologyContext context, OutputCollector collector) {
-        this.counts = [:]
+        theCounts = [:]
     }
 
     @Override
     void execute( backtype.storm.tuple.Tuple tuple ) {
         String word = tuple.getStringByField( 'word' )
         Long count = tuple.getLongByField( 'count' )
-        counts.put( word, count )
+        theCounts.put( word, count )
     }
 
     @Override
     void cleanup() {
         log.info( 'final count' )
-        counts.sort { it.value }.reverseEach { k, v ->
+        theCounts.sort { it.value }.reverseEach { k, v ->
             log.info( "'$k' - $v" )
         }
     }
