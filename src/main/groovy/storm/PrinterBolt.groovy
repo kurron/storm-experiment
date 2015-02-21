@@ -5,6 +5,7 @@ import backtype.storm.task.TopologyContext
 import backtype.storm.topology.OutputFieldsDeclarer
 import backtype.storm.topology.base.BaseRichBolt
 import groovy.util.logging.Slf4j
+import backtype.storm.tuple.Tuple as StormTuple
 
 @Slf4j
 class PrinterBolt extends BaseRichBolt {
@@ -21,7 +22,7 @@ class PrinterBolt extends BaseRichBolt {
     }
 
     @Override
-    void execute( backtype.storm.tuple.Tuple tuple ) {
+    void execute( StormTuple tuple ) {
         String word = tuple.getStringByField( 'word' )
         Long count = tuple.getLongByField( 'count' )
         theCounts.put( word, count )
