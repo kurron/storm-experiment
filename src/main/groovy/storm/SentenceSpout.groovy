@@ -11,13 +11,13 @@ import groovy.util.logging.Slf4j
 @Slf4j
 class SentenceSpout extends BaseRichSpout {
 
-    SpoutOutputCollector collector
-    def index = 0
+    private SpoutOutputCollector theCollector
+    private int index = 0
 
     @Override
     void nextTuple() {
         String msgId = UUID.randomUUID().toString()
-        this.collector.emit( new Values( sentences[index] ), msgId )
+        theCollector.emit( new Values( sentences[index] ), msgId )
         index++
         if ( index >= sentences.size() ) {
             index = 0
@@ -41,7 +41,7 @@ class SentenceSpout extends BaseRichSpout {
 
     @Override
     void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
-        this.collector = collector
+        theCollector = collector
     }
 
 

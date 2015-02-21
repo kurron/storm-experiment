@@ -10,7 +10,7 @@ import backtype.storm.tuple.Tuple as StormTuple
 @Slf4j
 class PrinterBolt extends BaseRichBolt {
 
-    Map<String,Long> theCounts = [:]
+    private Map<String,Long> theCounts = [:]
 
     @Override
     void declareOutputFields( OutputFieldsDeclarer declarer ) {

@@ -7,12 +7,13 @@ import backtype.storm.topology.base.BaseRichBolt
 import backtype.storm.tuple.Fields
 import backtype.storm.tuple.Values
 import groovy.util.logging.Slf4j
+import backtype.storm.tuple.Tuple as StormTuple
 
 @Slf4j
 class WordCountBolt extends BaseRichBolt {
 
-    HashMap counts=null
-    OutputCollector outputCollector
+    private Map<String,Long> theCounts = [:]
+    private OutputCollector theCollector
 
     @Override
     void declareOutputFields( OutputFieldsDeclarer declarer ) {
@@ -20,19 +21,19 @@ class WordCountBolt extends BaseRichBolt {
     }
     @Override
     void prepare( Map stormConf, TopologyContext context, OutputCollector collector ) {
-        this.outputCollector = collector
-        counts=[:]
+        theCollector = collector
+        theCounts = [:]
     }
 
     @Override
-    void execute( backtype.storm.tuple.Tuple tuple ) {
+    void execute( StormTuple tuple ) {
         String word = tuple.getStringByField( 'word' )
-        Long count = this.counts.get( word )
+        Long count = theCounts.get( word )
         if ( count == null ) {
             count = 0L
         }
         count++
-        this.counts[word] = count
-        this.outputCollector.emit( new Values( word, count ) )
+        theCounts[word] = count
+        theCollector.emit( new Values( word, count ) )
     }
 }

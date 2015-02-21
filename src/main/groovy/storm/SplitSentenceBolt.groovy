@@ -7,11 +7,12 @@ import backtype.storm.topology.base.BaseRichBolt
 import backtype.storm.tuple.Fields
 import backtype.storm.tuple.Values
 import groovy.util.logging.Slf4j
+import backtype.storm.tuple.Tuple as StormTuple
 
 @Slf4j
 class SplitSentenceBolt extends BaseRichBolt {
 
-    OutputCollector collector
+    private OutputCollector theCollector
 
     @Override
     void declareOutputFields( OutputFieldsDeclarer declarer ) {
@@ -20,14 +21,14 @@ class SplitSentenceBolt extends BaseRichBolt {
 
     @Override
     void prepare( Map stormConf, TopologyContext context, OutputCollector collector ) {
-        this.collector = collector
+        theCollector = collector
     }
 
     @Override
-    void execute( backtype.storm.tuple.Tuple tuple ) {
+    void execute( StormTuple tuple ) {
         String sentence = tuple.getStringByField( 'sentence' )
         sentence.split().each { word ->
-            collector.emit(new Values(word))
+            theCollector.emit (new Values( word ) )
         }
     }
 }
