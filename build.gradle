@@ -3,7 +3,7 @@ buildscript {
         springBootVersion = '1.2.1.RELEASE'
     }
     repositories {
-        mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -23,13 +23,22 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
-    mavenCentral()
+    jcenter()
+    maven {
+        url "http://clojars.org/repo"
+    }
 }
 
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter")
     compile("org.codehaus.groovy:groovy")
+    compile ('org.apache.storm:storm-core:0.9.3') {
+//      exclude group: "org.slf4j", module: "log4j-over-slf4j"
+        ext {
+            fatJarExclude = true
+        }
+    }
     testCompile("org.springframework.boot:spring-boot-starter-test")
 }
 
