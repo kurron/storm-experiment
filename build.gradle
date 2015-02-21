@@ -1,19 +1,6 @@
-buildscript {
-    ext {
-        springBootVersion = '1.2.1.RELEASE'
-    }
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-    }
-}
-
 apply plugin: 'groovy'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
-apply plugin: 'spring-boot' 
 
 jar {
     baseName = 'storm'
@@ -31,15 +18,17 @@ repositories {
 
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter")
-    compile("org.codehaus.groovy:groovy")
+    compile( "org.codehaus.groovy:groovy-all:2.4.1" )
     compile ('org.apache.storm:storm-core:0.9.3') {
 //      exclude group: "org.slf4j", module: "log4j-over-slf4j"
         ext {
             fatJarExclude = true
         }
     }
-    testCompile("org.springframework.boot:spring-boot-starter-test")
+    testCompile( "org.spockframework:spock-core:0.7-groovy-2.0" ) {
+        exclude module: 'groovy-all'
+        exclude module: 'junit-dep'
+    }
 }
 
 eclipse {
@@ -49,4 +38,5 @@ eclipse {
     }
 }
  
+defaultTasks << 'clean'
 defaultTasks << 'build'
